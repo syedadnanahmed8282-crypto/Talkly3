@@ -43,6 +43,7 @@ import coil.compose.AsyncImage
 import com.family.talkly.data.models.ChatMessage
 import com.family.talkly.data.models.MessageType
 import com.family.talkly.ui.theme.WhatsappGreen
+import com.family.talkly.util.ImageUtils
 
 @Composable
 fun FullMediaViewerDialog(
@@ -64,7 +65,7 @@ fun FullMediaViewerDialog(
                 // Media Content
                 if (message.mediaUrl != null) {
                     AsyncImage(
-                        model = message.mediaUrl,
+                        model = ImageUtils.getProfileImageModel(message.mediaUrl),
                         contentDescription = "Full Media",
                         contentScale = ContentScale.Fit,
                         modifier = Modifier.fillMaxSize()

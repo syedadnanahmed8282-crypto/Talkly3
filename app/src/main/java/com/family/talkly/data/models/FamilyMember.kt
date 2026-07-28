@@ -9,9 +9,9 @@ data class FamilyMember(
     val avatarUrl: String? = null,
     val status: String = "Available for video call",
     val phone: String,
-    val isOnline: Boolean = true,
+    val isOnline: Boolean = false,
     val isTyping: Boolean = false,
-    val lastSeen: String = "Just now",
+    val lastSeen: String = "Recently",
     val lastActiveTimestamp: Long = 0L,
     val unreadCount: Int = 0,
     val isPinned: Boolean = false,
@@ -19,12 +19,25 @@ data class FamilyMember(
     val firebaseUid: String? = null
 ) {
     /**
+     * True if the user is online and active within the last 3 minutes.
+     */
+    val isOnlineEffective: Boolean
+        get() {
+            if (!isOnline) return false
+            if (lastActiveTimestamp > 0L) {
+                val diff = System.currentTimeMillis() - lastActiveTimestamp
+                if (diff > 3 * 60 * 1000L) return false
+            }
+            return true
+        }
+
+    /**
      * Active badge should stay visible if user is currently online
      * OR if user was active within the last 45 minutes (45 * 60 * 1000 ms).
      */
     val isRecentlyActive: Boolean
         get() {
-            if (isOnline) return true
+            if (isOnlineEffective) return true
             if (lastActiveTimestamp <= 0L) return false
             val diff = System.currentTimeMillis() - lastActiveTimestamp
             return diff in 0L..(45 * 60 * 1000L)
@@ -39,9 +52,9 @@ val DEFAULT_FAMILY_MEMBERS = listOf(
         id = "safwan",
         name = "Safwan",
         relation = "Friend",
-        status = "আচ্ছা সকালে কথা হবে",
+        status = "Talk to you in the morning",
         phone = "+880 1700-000001",
-        isOnline = true,
+        isOnline = false,
         isTyping = false,
         lastSeen = "6:30 PM",
         unreadCount = 0
@@ -70,7 +83,7 @@ val DEFAULT_FAMILY_MEMBERS = listOf(
     ),
     FamilyMember(
         id = "samim",
-        name = "সামিম",
+        name = "Samim",
         relation = "Contact",
         status = "Missed Audio Call",
         phone = "+880 1700-000004",
@@ -118,7 +131,7 @@ val DEFAULT_FAMILY_MEMBERS = listOf(
         relation = "Doctor",
         status = "Medical updates",
         phone = "+880 1700-000008",
-        isOnline = true,
+        isOnline = false,
         unreadCount = 3
     ),
     FamilyMember(
@@ -127,7 +140,7 @@ val DEFAULT_FAMILY_MEMBERS = listOf(
         relation = "Friend",
         status = "Available",
         phone = "+880 1700-000009",
-        isOnline = true,
+        isOnline = false,
         unreadCount = 1
     ),
     FamilyMember(
@@ -136,7 +149,7 @@ val DEFAULT_FAMILY_MEMBERS = listOf(
         relation = "Friend",
         status = "At work",
         phone = "+880 1700-000010",
-        isOnline = true,
+        isOnline = false,
         unreadCount = 2
     )
 )

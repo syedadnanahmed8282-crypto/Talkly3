@@ -70,6 +70,7 @@ import com.family.talkly.data.models.ChatMessage
 import com.family.talkly.data.models.MessageType
 import com.family.talkly.ui.theme.WhatsappGreen
 import com.family.talkly.ui.theme.WhatsappTeal
+import com.family.talkly.util.ImageUtils
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -270,7 +271,7 @@ fun MediaAttachmentDialog(
                             ) {
                                 Box(modifier = Modifier.fillMaxWidth()) {
                                     AsyncImage(
-                                        model = item.url,
+                                        model = ImageUtils.getProfileImageModel(item.url),
                                         contentDescription = item.title,
                                         contentScale = ContentScale.Crop,
                                         modifier = Modifier.fillMaxWidth().height(90.dp)
@@ -507,7 +508,7 @@ fun MediaPreviewAndTagDialog(
                         contentAlignment = Alignment.Center
                     ) {
                         AsyncImage(
-                            model = mediaUrl,
+                            model = ImageUtils.getProfileImageModel(mediaUrl),
                             contentDescription = "Media Preview",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier.fillMaxWidth().height(180.dp)

@@ -93,10 +93,10 @@ fun PostStatusDialog(
     }
 
     val galleryPresets = listOf(
-        "গ্যালারি ছবি ১" to "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&auto=format&fit=crop&q=80",
-        "গ্যালারি ছবি ২" to "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&auto=format&fit=crop&q=80",
-        "গ্যালারি ছবি ৩" to "https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?w=800&auto=format&fit=crop&q=80",
-        "গ্যালারি ভিডিও sample" to "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=800&auto=format&fit=crop&q=80"
+        "Gallery Photo 1" to "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&auto=format&fit=crop&q=80",
+        "Gallery Photo 2" to "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=800&auto=format&fit=crop&q=80",
+        "Gallery Photo 3" to "https://images.unsplash.com/photo-1495616811223-4d98c6e9c869?w=800&auto=format&fit=crop&q=80",
+        "Sample Video" to "https://images.unsplash.com/photo-1505751172876-fa1923c5c528?w=800&auto=format&fit=crop&q=80"
     )
 
     val colorOptions = listOf(
@@ -134,7 +134,7 @@ fun PostStatusDialog(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "শেয়ার স্টাটাস (গ্যালারি)",
+                            text = "Share Status (Gallery)",
                             style = MaterialTheme.typography.titleMedium.copy(
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White,
@@ -173,7 +173,7 @@ fun PostStatusDialog(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "গ্যালারি থেকে ছবি বা ভিডিও বাছুন 🖼️",
+                        text = "Choose Photo or Video 🖼️",
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp
                     )
@@ -232,7 +232,7 @@ fun PostStatusDialog(
                     } else {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
-                                text = if (statusText.isBlank()) "গ্যালারি থেকে মিডিয়া নির্বাচন করুন বা ক্যাপশন লিখুন" else statusText,
+                                text = if (statusText.isBlank()) "Select media from gallery or write a caption" else statusText,
                                 color = if (statusText.isBlank()) Color.White.copy(alpha = 0.5f) else Color.White,
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Medium,
@@ -247,7 +247,7 @@ fun PostStatusDialog(
 
                 // Sample Gallery items / Presets
                 Text(
-                    text = "স্যাম্পল গ্যালারি আইটেম (Sample Media)",
+                    text = "Sample Gallery Items",
                     style = MaterialTheme.typography.labelMedium.copy(
                         color = Color.White.copy(alpha = 0.8f)
                     ),
@@ -268,7 +268,7 @@ fun PostStatusDialog(
                                 )
                                 .clickable {
                                     selectedMediaUri = url
-                                    isVideoMedia = label.contains("ভিডিও")
+                                    isVideoMedia = label.lowercase().contains("video")
                                 }
                                 .padding(horizontal = 10.dp, vertical = 6.dp)
                         ) {
@@ -290,7 +290,7 @@ fun PostStatusDialog(
                     onValueChange = { if (it.length <= 200) statusText = it },
                     placeholder = {
                         Text(
-                            text = "স্টাটাস ক্যাপশন লিখুন (২৪ ঘণ্টা থাকবে)...",
+                            text = "Write a status caption (lasts 24h)...",
                             color = Color.White.copy(0.4f)
                         )
                     },
@@ -352,7 +352,7 @@ fun PostStatusDialog(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "পোস্ট হচ্ছে...",
+                            text = "Posting...",
                             fontWeight = FontWeight.Bold,
                             fontSize = 15.sp
                         )
@@ -364,7 +364,7 @@ fun PostStatusDialog(
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "স্টাটাস পোস্ট করুন (২৪ ঘণ্টা)",
+                            text = "Post Status (24 Hours)",
                             fontWeight = FontWeight.Bold,
                             fontSize = 15.sp
                         )

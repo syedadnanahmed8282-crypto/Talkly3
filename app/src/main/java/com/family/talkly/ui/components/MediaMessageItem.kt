@@ -38,6 +38,7 @@ import com.family.talkly.data.models.MessageType
 import com.family.talkly.ui.theme.ExpiredBgLight
 import com.family.talkly.ui.theme.ExpiredBorder
 import com.family.talkly.ui.theme.ExpiredTextDark
+import com.family.talkly.util.ImageUtils
 
 @Composable
 fun MediaMessageItem(
@@ -109,7 +110,7 @@ fun MediaMessageItem(
                 }
         ) {
             AsyncImage(
-                model = message.mediaUrl,
+                model = ImageUtils.getProfileImageModel(message.mediaUrl),
                 contentDescription = message.textContent,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxWidth().height(200.dp)

@@ -302,7 +302,7 @@ fun FamilyMembersScreen(
                                         modifier = Modifier.clickable { onTogglePresence(member) }
                                     ) {
                                         Text(
-                                            text = if (member.isTyping) "টাইপিং..." else if (member.isOnline) "অনলাইন" else "অফলাইন",
+                                            text = if (member.isTyping) "Typing..." else if (member.isOnline) "Online" else "Offline",
                                             color = if (member.isOnline) WhatsappGreen else Color.Gray,
                                             fontSize = 10.sp,
                                             fontWeight = FontWeight.Bold,

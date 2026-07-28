@@ -123,7 +123,7 @@ class FirebaseChatRepository(private val context: Context) {
                         avatarUrl = if (obj.has("avatarUrl") && !obj.isNull("avatarUrl")) obj.getString("avatarUrl") else null,
                         status = obj.optString("status", "Available for call 💬"),
                         phone = obj.getString("phone"),
-                        isOnline = obj.optBoolean("isOnline", true),
+                        isOnline = obj.optBoolean("isOnline", false),
                         isTyping = false,
                         lastSeen = obj.optString("lastSeen", "Recently"),
                         lastActiveTimestamp = obj.optLong("lastActiveTimestamp", 0L),
@@ -269,9 +269,9 @@ class FirebaseChatRepository(private val context: Context) {
             avatarUrl = avatarUrl,
             status = bio.ifBlank { "Available on Talkly 💬" },
             phone = cleanPhone,
-            isOnline = true,
+            isOnline = false,
             isTyping = false,
-            lastSeen = "Online",
+            lastSeen = "Recently",
             unreadCount = 0,
             isPinned = false
         )
@@ -344,13 +344,18 @@ class FirebaseChatRepository(private val context: Context) {
                         val updatedMembers = _familyMembers.value.map { member ->
                             val doc = snapshot.documents.firstOrNull { it.id == member.id }
                             if (doc != null) {
-                                val online = doc.getBoolean("isOnline") ?: member.isOnline
-                                val typing = doc.getBoolean("isTyping") ?: member.isTyping
+                                val online = doc.getBoolean("isOnline") ?: false
+                                val typing = doc.getBoolean("isTyping") ?: false
                                 val seen = doc.getString("lastSeen") ?: member.lastSeen
                                 val lastActiveTs = doc.getLong("lastActiveTimestamp") ?: member.lastActiveTimestamp
+
+                                val now = System.currentTimeMillis()
+                                val isRecent = lastActiveTs > 0L && (now - lastActiveTs) <= (3 * 60 * 1000L)
+                                val effectiveOnline = online && isRecent
+
                                 member.copy(
-                                    isOnline = online,
-                                    isTyping = typing,
+                                    isOnline = effectiveOnline,
+                                    isTyping = if (!effectiveOnline) false else typing,
                                     lastSeen = seen,
                                     lastActiveTimestamp = lastActiveTs
                                 )
@@ -522,18 +527,23 @@ class FirebaseChatRepository(private val context: Context) {
                                 val bio = matchedDoc.getString("bio") ?: member.status
                                 val pic = matchedDoc.getString("profilePicUrl") ?: member.avatarUrl
                                 val realName = matchedDoc.getString("name") ?: member.name
-                                val online = matchedDoc.getBoolean("isOnline") ?: member.isOnline
+                                val online = matchedDoc.getBoolean("isOnline") ?: false
                                 val lastActiveTs = matchedDoc.getLong("lastActiveTimestamp")
                                     ?: matchedDoc.getLong("lastSeenTimestamp")
                                     ?: member.lastActiveTimestamp
                                 val seen = matchedDoc.getString("lastSeen") ?: member.lastSeen
+
+                                val now = System.currentTimeMillis()
+                                val isRecent = lastActiveTs > 0L && (now - lastActiveTs) <= (3 * 60 * 1000L)
+                                val effectiveOnline = online && isRecent
+
                                 member.copy(
                                     name = if (realName.isNotBlank()) realName else member.name,
                                     isRegisteredOnTalkly = true,
                                     firebaseUid = uid,
                                     avatarUrl = if (!pic.isNullOrBlank()) pic else member.avatarUrl,
                                     status = if (bio.isBlank()) "Available on Talkly 💬" else bio,
-                                    isOnline = online,
+                                    isOnline = effectiveOnline,
                                     lastActiveTimestamp = lastActiveTs,
                                     lastSeen = seen
                                 )

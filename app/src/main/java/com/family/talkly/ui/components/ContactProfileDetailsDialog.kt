@@ -487,7 +487,7 @@ fun ContactProfileDetailsDialog(
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = if (member.isOnline) "অনলাইন" else "লাস্ট সিন: ${member.displayLastSeen}",
+                                text = if (member.isOnline) "Online" else "Last seen: ${member.displayLastSeen}",
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Medium,
                                 color = if (member.isOnline) Color(0xFF25D366) else Color.DarkGray

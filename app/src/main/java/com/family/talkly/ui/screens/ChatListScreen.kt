@@ -461,7 +461,7 @@ fun ChatListScreen(
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text("Blocked Contacts (ব্লক করা কন্টাক্ট)") },
+                            text = { Text("Blocked Contacts") },
                             leadingIcon = {
                                 Icon(Icons.Default.Block, contentDescription = null, tint = Color(0xFFD32F2F))
                             },
@@ -763,7 +763,7 @@ fun ChatListScreen(
                         }
                     }
                 } else {
-                    // Saved Contacts Interface (সেভ করা কন্টাক্ট)
+                    // Saved Contacts Interface
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -803,7 +803,7 @@ fun ChatListScreen(
                                     Spacer(modifier = Modifier.width(12.dp))
                                     Column {
                                         Text(
-                                            text = "Saved Contacts (সেভ করা কন্টাক্ট)",
+                                            text = "Saved Contacts",
                                             fontWeight = FontWeight.Bold,
                                             fontSize = 15.sp,
                                             color = MaterialTheme.colorScheme.onSurface
@@ -963,7 +963,7 @@ fun ChatListScreen(
                                                                 .padding(horizontal = 6.dp, vertical = 2.dp)
                                                         ) {
                                                             Text(
-                                                                text = "ব্লকড (Blocked)",
+                                                                text = "Blocked",
                                                                 fontSize = 10.sp,
                                                                 fontWeight = FontWeight.Bold,
                                                                 color = Color(0xFFD32F2F)
@@ -1007,7 +1007,7 @@ fun ChatListScreen(
                                                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp)
                                                 ) {
                                                     Text(
-                                                        text = "আনব্লক",
+                                                        text = "Unblock",
                                                         color = WhatsappTeal,
                                                         fontSize = 12.sp,
                                                         fontWeight = FontWeight.Bold

@@ -21,6 +21,12 @@ android {
     versionName = "1.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+    val zegoAppId = project.findProperty("ZEGO_APP_ID")?.toString()?.ifEmpty { "2119647829" } ?: "2119647829"
+    val zegoAppSign = project.findProperty("ZEGO_APP_SIGN")?.toString()?.ifEmpty { "f7b21c961d9ae91fc3ca9ee453c6ff4027c451e93e59ceaeeecfcafd29bdc872" } ?: "f7b21c961d9ae91fc3ca9ee453c6ff4027c451e93e59ceaeeecfcafd29bdc872"
+
+    buildConfigField("String", "ZEGO_APP_ID", "\"$zegoAppId\"")
+    buildConfigField("String", "ZEGO_APP_SIGN", "\"$zegoAppSign\"")
   }
 
   signingConfigs {

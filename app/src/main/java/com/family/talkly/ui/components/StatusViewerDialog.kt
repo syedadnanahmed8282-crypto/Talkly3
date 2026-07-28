@@ -68,6 +68,7 @@ import com.family.talkly.data.models.StatusItem
 import com.family.talkly.data.models.UserStatusGroup
 import com.family.talkly.ui.theme.PrimaryDarkPurple
 import com.family.talkly.ui.theme.SecondaryLightSage
+import com.family.talkly.util.ImageUtils
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -192,7 +193,7 @@ fun StatusViewerDialog(
             // Background Photo Status
             if (currentStatus.photoUrl != null) {
                 AsyncImage(
-                    model = currentStatus.photoUrl,
+                    model = ImageUtils.getProfileImageModel(currentStatus.photoUrl),
                     contentDescription = "Status image",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
@@ -447,9 +448,9 @@ fun StatusViewerDialog(
                         // Love Reaction Button
                         IconButton(
                             onClick = {
-                                isLikedByMe = !isLikedByMe
+                                 isLikedByMe = !isLikedByMe
                                 onToggleLikeStatus?.invoke(currentStatus.id)
-                                val msg = if (isLikedByMe) "লাভ রিয়্যাক্ট দেওয়া হয়েছে ❤️" else "রিয়্যাক্ট তুলে নেওয়া হয়েছে"
+                                val msg = if (isLikedByMe) "Heart reaction added ❤️" else "Reaction removed"
                                 Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                             },
                             modifier = Modifier
@@ -471,7 +472,7 @@ fun StatusViewerDialog(
                         OutlinedTextField(
                             value = replyText,
                             onValueChange = { replyText = it },
-                            placeholder = { Text("মেসেজ বা কমেন্ট পাঠান...", color = Color.White.copy(0.6f)) },
+                            placeholder = { Text("Send message or comment...", color = Color.White.copy(0.6f)) },
                             modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(24.dp),
                             singleLine = true,
@@ -489,7 +490,7 @@ fun StatusViewerDialog(
                                         onClick = {
                                             if (replyText.isNotBlank()) {
                                                 onSendStatusReply?.invoke(currentGroup.userId, replyText)
-                                                Toast.makeText(context, "মেসেজ পাঠানো হয়েছে! 📩", Toast.LENGTH_SHORT).show()
+                                                Toast.makeText(context, "Message sent! 📩", Toast.LENGTH_SHORT).show()
                                                 replyText = ""
                                             }
                                         }
@@ -545,7 +546,7 @@ private fun StatusAnalyticsModal(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "স্টোরি অ্যানালিটিক্স",
+                        text = "Story Analytics",
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp,
                         color = Color.White
@@ -579,7 +580,7 @@ private fun StatusAnalyticsModal(
                         selected = selectedTab == 0,
                         onClick = { selectedTab = 0 },
                         text = {
-                            Text("কারা দেখেছেন (${status.viewers.size})", fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                            Text("Viewed by (${status.viewers.size})", fontWeight = FontWeight.Bold, fontSize = 13.sp)
                         },
                         selectedContentColor = SecondaryLightSage,
                         unselectedContentColor = Color.White.copy(0.6f)
@@ -588,7 +589,7 @@ private fun StatusAnalyticsModal(
                         selected = selectedTab == 1,
                         onClick = { selectedTab = 1 },
                         text = {
-                            Text("লাভ রিয়্যাক্ট (${status.likes.size})", fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                            Text("Likes (${status.likes.size})", fontWeight = FontWeight.Bold, fontSize = 13.sp)
                         },
                         selectedContentColor = SecondaryLightSage,
                         unselectedContentColor = Color.White.copy(0.6f)
@@ -600,7 +601,7 @@ private fun StatusAnalyticsModal(
                 if (selectedTab == 0) {
                     if (status.viewers.isEmpty()) {
                         Text(
-                            text = "এখনও কেউ দেখেনি",
+                            text = "No views yet",
                             color = Color.White.copy(alpha = 0.6f),
                             modifier = Modifier.padding(24.dp)
                         )
@@ -654,7 +655,7 @@ private fun StatusAnalyticsModal(
                 } else {
                     if (status.likes.isEmpty()) {
                         Text(
-                            text = "এখনও কেউ রিয়্যাক্ট দেয়নি",
+                            text = "No reactions yet",
                             color = Color.White.copy(alpha = 0.6f),
                             modifier = Modifier.padding(24.dp)
                         )

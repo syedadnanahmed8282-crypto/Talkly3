@@ -818,11 +818,11 @@ fun ChatDetailScreen(
                                     }
                                 }
                                 val statusSubtext = when {
-                                    !member.isRegisteredOnTalkly -> "Talkly তে রেজিস্টার্ড নন"
-                                    isBlocked -> "ব্লকড"
-                                    member.isTyping -> "টাইপিং..."
-                                    member.isOnline -> "অনলাইন"
-                                    else -> "লাস্ট সিন ${member.displayLastSeen}"
+                                    !member.isRegisteredOnTalkly -> "Not registered on Talkly"
+                                    isBlocked -> "Blocked"
+                                    member.isTyping -> "typing..."
+                                    member.isOnline -> "online"
+                                    else -> "last seen ${member.displayLastSeen}"
                                 }
                                 Text(
                                     text = statusSubtext,
@@ -1155,10 +1155,10 @@ fun ChatDetailScreen(
                     item { Spacer(modifier = Modifier.height(8.dp)) }
 
                     items(displayedMessages, key = { it.id }) { msg ->
-                        val isSelf = msg.senderId == "self" ||
-                                msg.receiverId == member.id ||
-                                (!member.firebaseUid.isNullOrBlank() && msg.receiverId == member.firebaseUid) ||
-                                (member.phone.isNotBlank() && (msg.receiverId == member.phone || com.family.talkly.util.PhoneUtils.extractPhoneSuffix(msg.receiverId) == com.family.talkly.util.PhoneUtils.extractPhoneSuffix(member.phone)))
+                        val isMemberSender = (msg.senderId == member.id) ||
+                                (!member.firebaseUid.isNullOrBlank() && msg.senderId == member.firebaseUid) ||
+                                (member.phone.isNotBlank() && (msg.senderId == member.phone || com.family.talkly.util.PhoneUtils.extractPhoneSuffix(msg.senderId) == com.family.talkly.util.PhoneUtils.extractPhoneSuffix(member.phone)))
+                        val isSelf = !isMemberSender
                         var offsetX by remember { mutableFloatStateOf(0f) }
                         var showReadDetails by remember { mutableStateOf(false) }
 

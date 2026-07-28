@@ -12,6 +12,7 @@ import android.media.MediaMetadataRetriever
 import android.media.MediaMuxer
 import android.net.Uri
 import android.util.Log
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -223,40 +224,46 @@ class MediaCompressorAndUploader(private val context: Context) {
             val uploadTask = storageRef.putFile(Uri.fromFile(file))
 
             uploadTask.addOnProgressListener { snapshot ->
-                val progressPercent = ((100.0 * snapshot.bytesTransferred) / snapshot.totalByteCount).toInt()
-                val kbSent = snapshot.bytesTransferred / 1024
-                val kbTotal = snapshot.totalByteCount / 1024
-                onProgress(progressPercent.coerceIn(0, 100), "Uploading to Firebase: ${kbSent}KB / ${kbTotal}KB (${progressPercent}%)")
-            }
-
-            // Await completion or fallback
-            var downloadUrlStr: String? = null
-            uploadTask.continueWithTask { task ->
-                if (!task.isSuccessful) {
-                    task.exception?.let { throw it }
+                if (snapshot.totalByteCount > 0) {
+                    val progressPercent = ((100.0 * snapshot.bytesTransferred) / snapshot.totalByteCount).toInt()
+                    val kbSent = snapshot.bytesTransferred / 1024
+                    val kbTotal = snapshot.totalByteCount / 1024
+                    onProgress(progressPercent.coerceIn(0, 100), "Uploading to Firebase: ${kbSent}KB / ${kbTotal}KB (${progressPercent}%)")
                 }
-                storageRef.downloadUrl
-            }.addOnSuccessListener { uri ->
-                downloadUrlStr = uri.toString()
             }
 
-            // Wait briefly for task
-            val startTime = System.currentTimeMillis()
-            while (!uploadTask.isComplete && System.currentTimeMillis() - startTime < 12000) {
-                kotlinx.coroutines.delay(100)
-            }
-
-            if (uploadTask.isSuccessful && downloadUrlStr != null) {
-                downloadUrlStr!!
-            } else {
-                Log.w(TAG, "Firebase Storage offline or incomplete. Using compressed local Uri.")
-                Uri.fromFile(file).toString()
+            Tasks.await(uploadTask)
+            val downloadUri = Tasks.await(storageRef.downloadUrl)
+            val url = downloadUri.toString()
+            if (url.isNotBlank()) {
+                Log.d(TAG, "Uploaded to Firebase Storage successfully: $url")
+                return@withContext url
             }
         } catch (e: Exception) {
-            Log.w(TAG, "Firebase Storage upload error fallback: ${e.localizedMessage}")
-            // Return compressed local File Uri so media still functions smoothly offline
-            Uri.fromFile(file).toString()
+            Log.w(TAG, "Firebase Storage upload error or offline fallback: ${e.localizedMessage}")
         }
+
+        // Fallback: If Firebase Storage upload fails, times out or is unconfigured,
+        // convert image files to Base64 Data URL so that Firestore can deliver the image
+        // directly to recipient devices without relying on local cache paths!
+        val isImage = file.name.endsWith(".jpg", ignoreCase = true) ||
+                file.name.endsWith(".jpeg", ignoreCase = true) ||
+                file.name.endsWith(".png", ignoreCase = true) ||
+                remotePath.contains("img")
+
+        if (isImage) {
+            try {
+                val bytes = file.readBytes()
+                val base64Str = android.util.Base64.encodeToString(bytes, android.util.Base64.NO_WRAP)
+                val dataUrl = "data:image/jpeg;base64,$base64Str"
+                Log.d(TAG, "Encoded image to Base64 Data URL fallback for real-time Firestore sync across devices.")
+                return@withContext dataUrl
+            } catch (ex: Exception) {
+                Log.e(TAG, "Failed to encode image file to base64 string: ${ex.localizedMessage}")
+            }
+        }
+
+        Uri.fromFile(file).toString()
     }
 
     private fun copyUriToFile(uri: Uri, destFile: File, onProgress: (Int, String) -> Unit) {

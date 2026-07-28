@@ -23,6 +23,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.isActive
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -109,8 +110,13 @@ fun MainScreen(
     }
 
     androidx.compose.runtime.LaunchedEffect(currentUserProfile?.uid) {
-        if (currentUserProfile != null && currentUserProfile.uid.isNotBlank()) {
-            chatRepository.startRealtimeMessageSync(currentUserProfile.uid)
+        val uid = currentUserProfile?.uid
+        if (!uid.isNullOrBlank()) {
+            chatRepository.startRealtimeMessageSync(uid)
+            while (true) {
+                chatRepository.updateCurrentUserPresence(uid, isOnline = true)
+                kotlinx.coroutines.delay(45000L) // Refresh presence heartbeat every 45s while active
+            }
         }
     }
 

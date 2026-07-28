@@ -123,13 +123,13 @@ fun BlockedContactsDialog(
                         Spacer(modifier = Modifier.width(10.dp))
                         Column {
                             Text(
-                                text = "ব্লক করা কন্টাক্টস",
+                                text = "Blocked Contacts",
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 18.sp,
                                 color = Color.White
                             )
                             Text(
-                                text = "${blockedMembers.size} টির কন্টাক্ট ব্লক করা আছে",
+                                text = "${blockedMembers.size} contacts blocked",
                                 fontSize = 12.sp,
                                 color = Color.White.copy(alpha = 0.7f)
                             )
@@ -156,7 +156,7 @@ fun BlockedContactsDialog(
                         value = searchQuery,
                         onValueChange = { searchQuery = it },
                         placeholder = {
-                            Text("ব্লক কন্টাক্ট খুঁজুন...", color = Color.White.copy(0.5f), fontSize = 13.sp)
+                            Text("Search blocked contacts...", color = Color.White.copy(0.5f), fontSize = 13.sp)
                         },
                         leadingIcon = {
                             Icon(
@@ -197,21 +197,21 @@ fun BlockedContactsDialog(
                         )
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            text = "কোনো কন্টাক্ট ব্লক করা নেই",
+                            text = "No blocked contacts",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.White
                         )
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(
-                            text = "আপনি ব্লক করলে কন্টাক্টগুলো এখানে দেখতে পাবেন।",
+                            text = "Blocked contacts will appear here.",
                             fontSize = 12.sp,
                             color = Color.White.copy(alpha = 0.6f)
                         )
                     }
                 } else if (filteredBlockedMembers.isEmpty()) {
                     Text(
-                        text = "কোনো মিল পাওয়া যায়নি",
+                        text = "No contacts found",
                         fontSize = 14.sp,
                         color = Color.White.copy(alpha = 0.6f),
                         modifier = Modifier.padding(20.dp)
@@ -289,7 +289,7 @@ fun BlockedContactsDialog(
                                     Button(
                                         onClick = {
                                             onUnblockUser(member.id)
-                                            Toast.makeText(context, "${member.name} আনব্লক করা হয়েছে ✅", Toast.LENGTH_SHORT).show()
+                                            Toast.makeText(context, "${member.name} unblocked ✅", Toast.LENGTH_SHORT).show()
                                         },
                                         colors = ButtonDefaults.buttonColors(
                                             containerColor = SecondaryLightSage,
@@ -299,7 +299,7 @@ fun BlockedContactsDialog(
                                         modifier = Modifier.height(36.dp)
                                     ) {
                                         Text(
-                                            text = "আনব্লক",
+                                            text = "Unblock",
                                             fontWeight = FontWeight.Bold,
                                             fontSize = 12.sp
                                         )
@@ -322,7 +322,7 @@ fun BlockedContactsDialog(
                     ),
                     shape = RoundedCornerShape(14.dp)
                 ) {
-                    Text("বন্ধ করুন (Close)", fontWeight = FontWeight.SemiBold)
+                    Text("Close", fontWeight = FontWeight.SemiBold)
                 }
             }
         }

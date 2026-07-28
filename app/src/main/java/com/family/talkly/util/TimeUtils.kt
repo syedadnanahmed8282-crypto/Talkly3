@@ -27,32 +27,32 @@ object TimeUtils {
     }
 
     /**
-     * Formats last seen timestamp into human-readable Bengali text.
-     * e.g., "এখনই", "৫ মিনিট আগে", "আজ 10:15 AM", "গতকাল 08:30 PM", "28 Jul, 11:45 AM"
+     * Formats last seen timestamp into human-readable English text.
+     * e.g., "Just now", "5m ago", "Today at 10:15 AM", "Yesterday at 08:30 PM", "28 Jul, 11:45 AM"
      */
-    fun formatLastSeenTime(timestamp: Long, fallback: String = "সম্প্রতি"): String {
+    fun formatLastSeenTime(timestamp: Long, fallback: String = "Recently"): String {
         if (timestamp <= 0) {
-            return if (fallback.isNotBlank() && fallback != "Online") fallback else "সম্প্রতি"
+            return if (fallback.isNotBlank() && fallback != "Online") fallback else "Recently"
         }
         val now = System.currentTimeMillis()
         val diffMs = now - timestamp
-        if (diffMs < 0) return "এখনই"
+        if (diffMs < 0) return "Just now"
         if (diffMs < 60 * 1000L) {
-            return "এখনই"
+            return "Just now"
         }
         val minutesAgo = diffMs / (60 * 1000L)
         if (minutesAgo < 60) {
-            return "$minutesAgo মিনিট আগে"
+            return "${minutesAgo}m ago"
         }
         val hoursAgo = minutesAgo / 60
         if (hoursAgo < 24) {
             val timeFormat = SimpleDateFormat("hh:mm a", Locale.ENGLISH)
-            return "আজ ${timeFormat.format(Date(timestamp))}"
+            return "Today at ${timeFormat.format(Date(timestamp))}"
         }
         val daysAgo = hoursAgo / 24
         if (daysAgo == 1L) {
             val timeFormat = SimpleDateFormat("hh:mm a", Locale.ENGLISH)
-            return "গতকাল ${timeFormat.format(Date(timestamp))}"
+            return "Yesterday at ${timeFormat.format(Date(timestamp))}"
         }
         val dateFormat = SimpleDateFormat("dd MMM, hh:mm a", Locale.ENGLISH)
         return dateFormat.format(Date(timestamp))
